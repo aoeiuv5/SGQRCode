@@ -59,14 +59,24 @@
 
 - (void)setDelegate:(id<SGScanCodeDelegate>)delegate {
     _delegate = delegate;
-    
+
     /// 将元数据输出对象添加到会话对象中
     if ([_session canAddOutput:self.metadataOutput]) {
         [_session addOutput:self.metadataOutput];
     }
-    
-    /// 元数据输出对象的二维码识数据别类型
-    _metadataOutput.metadataObjectTypes = self.metadataObjectTypes;
+
+    /// 元数据输出对象的二维码识数据别类型（只设置当前设备支持的）
+    NSArray *supportedTypes = [AVCaptureMetadataOutput availableMetadataObjectTypes];
+
+    // 过滤出当前设备支持的类型
+    NSArray *filteredTypes = [self.metadataObjectTypes filteredArrayUsingPredicate:
+        [NSPredicate predicateWithBlock:^BOOL(NSString *type, NSDictionary *bindings) {
+            return [supportedTypes containsObject:type];
+        }]
+    ];
+
+    // 安全地设置
+    self.metadataOutput.metadataObjectTypes = filteredTypes;
 }
 
 - (void)setSampleBufferDelegate:(id<SGScanCodeSampleBufferDelegate>)sampleBufferDelegate {
