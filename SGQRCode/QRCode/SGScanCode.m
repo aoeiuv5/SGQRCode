@@ -66,7 +66,7 @@
     }
 
     /// 元数据输出对象的二维码识数据别类型（只设置当前设备支持的）
-    NSArray *supportedTypes = [AVCaptureMetadataOutput availableMetadataObjectTypes];
+    NSArray *supportedTypes = [self.metadataOutput availableMetadataObjectTypes];
 
     // 过滤出当前设备支持的类型
     NSArray *filteredTypes = [self.metadataObjectTypes filteredArrayUsingPredicate:
